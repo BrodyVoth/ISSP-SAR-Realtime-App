@@ -32,20 +32,6 @@ import android.view.WindowManager
 import android.widget.Button
 import com.clarifai.clarifai_android_sdk.core.Clarifai
 import android.support.v7.app.AlertDialog
-import android.support.v4.app.SupportActivity
-import android.support.v4.app.SupportActivity.ExtraData
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
-import com.facebook.react.LifecycleState
-import com.facebook.react.shell.MainReactPackage
-import com.facebook.react.common.ApplicationHolder.getApplication
-import com.facebook.react.ReactInstanceManager
-import com.facebook.react.ReactRootView
-import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler
-import android.app.Activity
-
-
-
-
 
 
 /**
@@ -54,35 +40,6 @@ import android.app.Activity
  *
  * Copyright © 2018 Clarifai. All rights reserved.
  */
-
-class MyReactActivity : Activity(), DefaultHardwareBackBtnHandler {
-    private var mReactRootView: ReactRootView? = null
-    private var mReactInstanceManager: ReactInstanceManager? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        mReactRootView = ReactRootView(this)
-        mReactInstanceManager = ReactInstanceManager.builder()
-                .setApplication(application)
-                .setCurrentActivity(this)
-                .setBundleAssetName("index.android.bundle")
-                .setJSMainModulePath("index")
-                .addPackage(MainReactPackage())
-                .setUseDeveloperSupport(BuildConfig.DEBUG)
-                .setInitialLifecycleState(LifecycleState.RESUMED)
-                .build()
-        // The string here (e.g. "MyReactNativeApp") has to match
-        // the string in AppRegistry.registerComponent() in index.js
-        mReactRootView!!.startReactApplication(mReactInstanceManager, "AwesomeReactApp", null)
-
-        setContentView(mReactRootView)
-    }
-
-    override fun invokeDefaultOnBackPressed() {
-        super.onBackPressed()
-    }
-}
 class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraControl.CameraControlTriggers {
     override fun getCameraPermission() {
         if (!havePermissions()) {
@@ -106,7 +63,6 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
     private lateinit var periodicPrediction: PeriodicPrediction
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        val OVERLAY_PERMISSION_REQ_CODE = 1
         super.onCreate(savedInstanceState)
         setupWindow()
         setContentView(R.layout.activity_home)
@@ -124,7 +80,6 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
             Log.d(TAG, "No permission. So, asking for it")
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), CAMERA_REQUEST_CODE_INIT)
             return
-
         }
         onCreateAfterPermissions()
     }
