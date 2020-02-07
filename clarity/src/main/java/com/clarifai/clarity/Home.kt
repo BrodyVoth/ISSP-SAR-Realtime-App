@@ -32,7 +32,16 @@ import android.view.WindowManager
 import android.widget.Button
 import com.clarifai.clarifai_android_sdk.core.Clarifai
 import android.support.v7.app.AlertDialog
+import kotlinx.android.synthetic.main.activity_home.*
 
+import android.net.Uri
+import android.content.ContextWrapper
+import android.graphics.BitmapFactory
+import java.io.File
+import java.io.OutputStream
+import java.io.FileOutputStream
+import java.util.*
+import java.io.IOException
 
 /**
  * Home.kt
@@ -44,6 +53,7 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
     override fun getCameraPermission() {
         if (!havePermissions()) {
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), CAMERA_REQUEST_CODE_INIT)
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), WRITE_REQUEST_CODE_INIT)
             return
         }
     }
@@ -62,6 +72,10 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
     private lateinit var cameraControl: CameraControl
     private lateinit var periodicPrediction: PeriodicPrediction
 
+    private val PERMISSION_CODE = 1000
+    private val IMAGE_CAPTURE_CODE = 1001
+    var image_uri: Uri? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupWindow()
@@ -79,15 +93,22 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
         if (!havePermissions()) {
             Log.d(TAG, "No permission. So, asking for it")
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), CAMERA_REQUEST_CODE_INIT)
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), WRITE_REQUEST_CODE_INIT)
             return
         }
         onCreateAfterPermissions()
+
+
+        cap_button.setOnClickListener{
+            bitmapToFile(cameraControl.bitmap)
+        }
     }
 
     override fun onResume() {
         super.onResume()
         if (!havePermissions()) {
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), CAMERA_REQUEST_CODE_RESUME)
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), WRITE_REQUEST_CODE_RESUME)
             return
         }
         onResumeAfterPermissions()
@@ -110,7 +131,7 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
 
     private fun findViews() {
         textureView = findViewById(R.id.texture)
-        captureButton = findViewById(R.id.button)
+        captureButton = findViewById(R.id.cap_button)
         recyclerView = findViewById(R.id.concepts_list_rv)
         val builder = AlertDialog.Builder(this)
         builder.setView(R.layout.progress)
@@ -191,8 +212,34 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
         return null
     }
 
+    //Bit map conversion...
+
+    private fun bitmapToFile(bitmap:Bitmap): Uri {
+        // Get the context wrapper
+        val wrapper = ContextWrapper(applicationContext)
+
+        // Initialize a new file instance to save bitmap object
+        var file = wrapper.getDir("Images",Context.MODE_PRIVATE)
+        file = File(file,"${UUID.randomUUID()}.jpg")
+
+        try{
+            // Compress the bitmap and save in jpg format
+            val stream:OutputStream = FileOutputStream(file)
+            bitmap.compress(Bitmap.CompressFormat.JPEG,100,stream)
+            stream.flush()
+            stream.close()
+        }catch (e:IOException){
+            e.printStackTrace()
+        }
+
+        // Return the saved bitmap uri
+        return Uri.parse(file.absolutePath)
+    }
+
     companion object {
         private val TAG = Home::class.java.simpleName
+        private const val WRITE_REQUEST_CODE_INIT = 201
+        private const val WRITE_REQUEST_CODE_RESUME = 202
         private const val CAMERA_REQUEST_CODE_INIT = 101
         private const val CAMERA_REQUEST_CODE_RESUME = 102
     }

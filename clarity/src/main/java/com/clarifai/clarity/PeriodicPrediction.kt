@@ -17,11 +17,23 @@
 package com.clarifai.clarity
 
 import android.app.Activity
+import android.content.Context
+import android.content.ContextWrapper
 import android.graphics.Bitmap
 import android.os.Handler
 import android.util.Log
 
+import android.content.Intent
+import android.provider.MediaStore
+import android.content.pm.PackageManager
+import android.net.Uri
+
 import com.clarifai.clarifai_android_sdk.dataassets.Image
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
+import java.io.OutputStream
+import java.util.*
 import java.util.concurrent.BlockingQueue
 import java.util.concurrent.LinkedBlockingQueue
 
