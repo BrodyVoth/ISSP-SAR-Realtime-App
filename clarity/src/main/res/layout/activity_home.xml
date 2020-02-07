@@ -19,7 +19,8 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <Button
-            android:id="@+id/button"
+            android:id="@+id/cap_button"
+            android:text="TEST!"
             android:layout_width="75dp"
             android:layout_height="75dp"
             android:layout_marginBottom="42dp"

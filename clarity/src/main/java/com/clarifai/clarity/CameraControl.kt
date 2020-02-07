@@ -80,15 +80,12 @@ internal constructor(private val textureView: TextureView, private val cameraMan
         setup()
     }
 
-    val bitmap: Bitmap?
+    val bitmap: Bitmap
         get() {
-            if (lock()) {
-                val bitmap = textureView.bitmap
-                unlock()
-                return bitmap
-            }
-            Log.w(TAG, "Camera setup not complete. Cannot capture bitmap at the moment.")
-            return null
+            val bitmap = textureView.bitmap
+            unlock()
+            return bitmap
+
         }
 
     private fun setup() {
