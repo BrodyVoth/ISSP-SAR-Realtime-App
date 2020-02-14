@@ -42,6 +42,8 @@ import java.io.OutputStream
 import java.io.FileOutputStream
 import java.util.*
 import java.io.IOException
+import android.os.Environment
+import java.nio.file.Files
 
 /**
  * Home.kt
@@ -212,14 +214,18 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
         return null
     }
 
-    //Bit map conversion...
-
     private fun bitmapToFile(bitmap:Bitmap): Uri {
         // Get the context wrapper
         val wrapper = ContextWrapper(applicationContext)
 
+        //Check if file exists
+        var dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES+"/SarApp")
+        if (!dir.exists()){
+            Log.d(TAG, "Directory did not exist creating:"+dir.absolutePath)
+            dir.mkdir()
+        }
         // Initialize a new file instance to save bitmap object
-        var file = wrapper.getDir("Images",Context.MODE_PRIVATE)
+        var file = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES+"/SarApp")
         file = File(file,"${UUID.randomUUID()}.jpg")
 
         try{
@@ -233,6 +239,7 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
         }
 
         // Return the saved bitmap uri
+        Log.d(TAG, file.absolutePath)
         return Uri.parse(file.absolutePath)
     }
 
