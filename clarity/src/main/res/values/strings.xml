@@ -10,4 +10,19 @@
     <string name="api_dialog_prompt">Please enter your API Key:</string>
     <string name="api_dialog_finished">Finished</string>
     <string name="loading_model">Loading model, please wait…</string>
+    <string name="adjust_time_interval">Photo Interval</string>
+    <string name="interval_summary">
+        Change how often photos are taken during the session
+    </string>
+    <string name="default_interval">5 seconds</string>
+    <string-array name="time_intervals">
+        <item>5 seconds</item>
+        <item>10 seconds</item>
+        <item>15 seconds</item>
+    </string-array>
+    <string-array name="time_intervals_values">
+        <item>5 seconds</item>
+        <item>10 seconds</item>
+        <item>15 seconds</item>
+    </string-array>
 </resources>
