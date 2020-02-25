@@ -40,6 +40,10 @@ import java.io.FileOutputStream
 import java.util.*
 import java.io.IOException
 import android.widget.Toast;
+import android.os.Environment
+import java.nio.file.Files
+import kotlin.math.log
+
 
 /**
  * Home.kt
@@ -60,7 +64,6 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
         return havePermissions()
     }
 
-    private lateinit var captureButton: Button
     private lateinit var recyclerView: RecyclerView
     private lateinit var textureView: TextureView
     private lateinit var outputControl: OutputControl
@@ -82,6 +85,7 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
         loadingScreen(show = true)
         setSupportActionBar(findViewById(R.id.my_toolbar))
 
+
         val sharedPreferences = this.getSharedPreferences(getString(R.string.shared_preferences_key), Context.MODE_PRIVATE)
         val missingKey = getString(R.string.missing_api_key)
         val apiKey = sharedPreferences.getString(getString(R.string.shared_preferences_api_key), missingKey)
@@ -97,12 +101,7 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
         }
         onCreateAfterPermissions()
 
-
-        cap_button.setOnClickListener{
-            bitmapToFile(cameraControl.bitmap)
-
         }
-    }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu,menu)
@@ -161,7 +160,6 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
 
     private fun findViews() {
         textureView = findViewById(R.id.texture)
-        captureButton = findViewById(R.id.cap_button)
         recyclerView = findViewById(R.id.concepts_list_rv)
 
 
@@ -169,15 +167,6 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
         val builder = AlertDialog.Builder(this)
         builder.setView(R.layout.progress)
         dialog = builder.create()
-    }
-
-
-
-
-    private fun setListeners() {
-        captureButton.setOnClickListener {
-            // TODO
-        }
     }
 
     private fun loadingScreen(show: Boolean) {
@@ -193,7 +182,7 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
         Log.d(TAG, "Have permission from requesting with onCreate")
         cameraControl = CameraControl(textureView, getSystemService(Context.CAMERA_SERVICE) as CameraManager, this)
         periodicPrediction = PeriodicPrediction(this)
-        setListeners()
+
     }
 
     @SuppressLint("MissingPermission")
@@ -226,6 +215,7 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
     override fun onReceivedPredictions(outputs: List<Array<String>>) {
         runOnUiThread {
             if (outputs.isNotEmpty()) {
+                bitmapToFile(cameraControl.bitmap, outputs)
                 outputControl.update(outputs)
             }
         }
@@ -234,8 +224,6 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
     override fun modelLoaded() {
         Log.d(TAG, "Loaded the model")
         runOnUiThread {
-            captureButton.isEnabled = true
-            captureButton.isClickable = true
             loadingScreen(show = false)
             onResumeAfterPermissions()
         }
@@ -248,14 +236,19 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
         return null
     }
 
-    //Bit map conversion...
-
-    private fun bitmapToFile(bitmap:Bitmap): Uri {
+    private fun bitmapToFile(bitmap:Bitmap, outputs: List<Array<String>>): Uri {
         // Get the context wrapper
         val wrapper = ContextWrapper(applicationContext)
 
+        //Check if file exists
+        var dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES+"/SarApp")
+        if (!dir.exists()){
+            Log.d(TAG, "Directory did not exist creating:"+dir.absolutePath)
+            dir.mkdir()
+        }
+
         // Initialize a new file instance to save bitmap object
-        var file = wrapper.getDir("Images",Context.MODE_PRIVATE)
+        var file = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES+"/SarApp")
         file = File(file,"${UUID.randomUUID()}.jpg")
 
         try{
@@ -264,13 +257,40 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
             bitmap.compress(Bitmap.CompressFormat.JPEG,100,stream)
             stream.flush()
             stream.close()
+            SaveData(outputs, file.absolutePath)
         }catch (e:IOException){
             e.printStackTrace()
         }
 
         // Return the saved bitmap uri
+         Log.d(TAG, file.absolutePath)
         return Uri.parse(file.absolutePath)
     }
+
+    private fun SaveData(outputs: List<Array<String>>, filepath: String): String {
+
+        var string = outputs[0].joinToString()
+        Log.d(TAG, string)
+
+
+
+        var dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES+"/SarApp")
+        if (!dir.exists()){
+            Log.d(TAG, "Directory did not exist creating:"+dir.absolutePath)
+            dir.mkdir()
+        }
+        var file = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES+"/SarApp")
+        file = File(file,"PredictionData.json")
+        try{
+            file.writeText(string)
+        }catch (e:IOException){
+            e.printStackTrace()
+        }
+        return "made it"
+    }
+
+
+
 
     companion object {
         private val TAG = Home::class.java.simpleName

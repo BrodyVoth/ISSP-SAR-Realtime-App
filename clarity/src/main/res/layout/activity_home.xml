@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Home">
+
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -18,30 +19,24 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <Button
-            android:id="@+id/cap_button"
-            android:layout_width="75dp"
-            android:layout_height="75dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="76dp"
-            android:background="@drawable/rounded_button"
-            android:text="TEST!"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-
         <android.support.v7.widget.RecyclerView
             android:id="@+id/concepts_list_rv"
             android:layout_width="62dp"
             android:layout_height="235dp"
             android:layout_marginTop="56dp"
             android:layout_marginEnd="16dp"
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/concepts_list_rv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="48dp"
+            android:layout_marginEnd="4dp"
             android:alpha="0.5"
             android:padding="10dp"
             android:rotation="0"
             android:scaleX="0.7"
             android:scaleY="0.7"
+            app:layout_constraintBottom_toTopOf="@+id/texture"
             app:layout_constraintEnd_toEndOf="@+id/texture"
             app:layout_constraintTop_toTopOf="@+id/texture" />
         <include
@@ -53,3 +48,7 @@
     </android.support.constraint.ConstraintLayout>
 </android.support.design.widget.CoordinatorLayout>
 
+            app:layout_constraintTop_toBottomOf="@+id/texture"
+            app:layout_constraintVertical_bias="0.78" />
+    </android.support.constraint.ConstraintLayout>
+</android.support.design.widget.CoordinatorLayout>
