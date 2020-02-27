@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ListPreference
+        android:key="cam_lens"
+        android:title="@string/adjust_time_interval"
+        android:summary="@string/interval_summary"
+        android:entries="@array/time_intervals"
+        android:entryValues="@array/time_intervals_values"
+        android:defaultValue="@string/default_interval"/>
+</PreferenceScreen>

@@ -13,9 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package com.clarifai.clarity
-
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
@@ -27,24 +25,25 @@ import android.support.v4.app.ActivityCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
 import android.util.Log
-import android.view.TextureView
-import android.view.WindowManager
 import android.widget.Button
 import com.clarifai.clarifai_android_sdk.core.Clarifai
 import android.support.v7.app.AlertDialog
 import kotlinx.android.synthetic.main.activity_home.*
+import android.content.Intent
 
 import android.net.Uri
 import android.content.ContextWrapper
-import android.graphics.BitmapFactory
+import android.view.*
 import java.io.File
 import java.io.OutputStream
 import java.io.FileOutputStream
 import java.util.*
 import java.io.IOException
+import android.widget.Toast;
 import android.os.Environment
 import java.nio.file.Files
 import kotlin.math.log
+
 
 /**
  * Home.kt
@@ -84,6 +83,7 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
         setContentView(R.layout.activity_home)
         findViews()
         loadingScreen(show = true)
+        setSupportActionBar(findViewById(R.id.my_toolbar))
 
 
         val sharedPreferences = this.getSharedPreferences(getString(R.string.shared_preferences_key), Context.MODE_PRIVATE)
@@ -100,6 +100,37 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
             return
         }
         onCreateAfterPermissions()
+
+        }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu,menu)
+        return true
+    }
+    override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
+
+        R.id.gallery -> {
+            Toast.makeText(this, "Gallery Clicked", Toast.LENGTH_SHORT).show()
+            true
+        }
+
+        R.id.interval -> {
+            Toast.makeText(this, "Interval Clicked", Toast.LENGTH_SHORT).show()
+            true
+        }
+
+        R.id.settings -> {
+            val intent = Intent(this, OptionsAction::class.java)
+            startActivity(intent)
+            true
+
+        }
+
+        else -> {
+            // If we got here, the user's action was not recognized.
+            // Invoke the superclass to handle it.
+            super.onOptionsItemSelected(item)
+        }
     }
 
     override fun onResume() {
@@ -130,6 +161,9 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
     private fun findViews() {
         textureView = findViewById(R.id.texture)
         recyclerView = findViewById(R.id.concepts_list_rv)
+
+
+
         val builder = AlertDialog.Builder(this)
         builder.setView(R.layout.progress)
         dialog = builder.create()
