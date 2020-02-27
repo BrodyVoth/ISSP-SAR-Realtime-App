@@ -21,12 +21,6 @@
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/concepts_list_rv"
-            android:layout_width="62dp"
-            android:layout_height="235dp"
-            android:layout_marginTop="56dp"
-            android:layout_marginEnd="16dp"
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/concepts_list_rv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="48dp"
@@ -44,11 +38,7 @@
             android:id="@+id/my_toolbar">
         </include>
 
-
-    </android.support.constraint.ConstraintLayout>
-</android.support.design.widget.CoordinatorLayout>
-
-            app:layout_constraintTop_toBottomOf="@+id/texture"
-            app:layout_constraintVertical_bias="0.78" />
+    app:layout_constraintTop_toBottomOf="@+id/texture"
+    app:layout_constraintVertical_bias="0.78" />
     </android.support.constraint.ConstraintLayout>
 </android.support.design.widget.CoordinatorLayout>
