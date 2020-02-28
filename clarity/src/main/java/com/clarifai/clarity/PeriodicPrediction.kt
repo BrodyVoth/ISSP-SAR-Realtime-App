@@ -22,6 +22,7 @@ import android.content.ContextWrapper
 import android.graphics.Bitmap
 import android.os.Handler
 import android.util.Log
+import android.app.Fragment
 
 import android.content.Intent
 import android.provider.MediaStore
@@ -174,7 +175,7 @@ class PeriodicPrediction internal constructor(homeActivity: Activity) {
     }
 
     companion object {
-        private const val REFRESH_RATE_MS = 3000
+        var REFRESH_RATE_MS = 5000
         private val TAG = PeriodicPrediction::class.java.simpleName
     }
 }

@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <ListPreference
-        android:key="cam_lens"
+        android:key="@string/adjust_time_interval"
         android:title="@string/adjust_time_interval"
         android:summary="@string/interval_summary"
         android:entries="@array/time_intervals"

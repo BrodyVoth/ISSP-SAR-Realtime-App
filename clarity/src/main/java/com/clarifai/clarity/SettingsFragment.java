@@ -10,6 +10,8 @@ public class SettingsFragment extends PreferenceFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        addPreferencesFromResource(R.xml.camera_options);
+        addPreferencesFromResource(R.xml.options_menu);
+
+
     }
 }
