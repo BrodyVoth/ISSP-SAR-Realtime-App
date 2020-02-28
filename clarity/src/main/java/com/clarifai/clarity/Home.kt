@@ -41,8 +41,11 @@ import java.util.*
 import java.io.IOException
 import android.widget.Toast;
 import android.os.Environment
+import android.util.JsonWriter
 import java.nio.file.Files
 import kotlin.math.log
+
+import org.json.*
 
 
 /**
@@ -257,7 +260,7 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
             bitmap.compress(Bitmap.CompressFormat.JPEG,100,stream)
             stream.flush()
             stream.close()
-            SaveData(outputs, file.absolutePath)
+            SaveData(outputs, file.name)
         }catch (e:IOException){
             e.printStackTrace()
         }
@@ -269,11 +272,6 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
 
     private fun SaveData(outputs: List<Array<String>>, filepath: String): String {
 
-        var string = outputs[0].joinToString()
-        Log.d(TAG, string)
-
-
-
         var dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES+"/SarApp")
         if (!dir.exists()){
             Log.d(TAG, "Directory did not exist creating:"+dir.absolutePath)
@@ -281,14 +279,22 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
         }
         var file = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES+"/SarApp")
         file = File(file,"PredictionData.json")
+
+
+        //make json prototype
+        var obj = JSONObject()
+        obj.put("Filename",filepath)
+        for(value in outputs) {
+            Log.d(TAG, value.joinToString())
+            obj.put(value[0], value[1])
+        }
         try{
-            file.writeText(string)
+            file.appendText(obj.toString())
         }catch (e:IOException){
             e.printStackTrace()
         }
-        return "made it"
+        return "Done"
     }
-
 
 
 
