@@ -167,14 +167,19 @@ class PeriodicPrediction internal constructor(homeActivity: Activity) {
         }
     }
 
+    fun Change_RFR(int:Int){
+        REFRESH_RATE_MS = int
+        Log.d(TAG, REFRESH_RATE_MS.toString())
+    }
+
     internal interface PredictionTriggers {
         fun onReceivedPredictions(outputs: List<Array<String>>)
         fun modelLoaded()
         fun captureBitmap(): Bitmap?
     }
 
-    companion object {
-        private const val REFRESH_RATE_MS = 3000
+    companion object Values {
+        var REFRESH_RATE_MS = 3000
         private val TAG = PeriodicPrediction::class.java.simpleName
     }
 }

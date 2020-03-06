@@ -16,7 +16,8 @@
         android:roundIcon="@drawable/clarifai_logo"
         android:supportsRtl="true"
         android:theme="@style/NoActionBar">
-        <activity android:name=".OptionsAction"></activity>
+        <activity android:name=".Graph_view"></activity>
+        <activity android:name=".OptionsAction" />
         <activity
             android:name=".PreloadActivity"
             android:theme="@style/SplashTheme">
@@ -28,7 +29,7 @@
         </activity>
         <activity
             android:name=".Home"
-            android:theme="@style/NoActionBar"></activity>
+            android:theme="@style/NoActionBar" />
     </application>
 
 </manifest>

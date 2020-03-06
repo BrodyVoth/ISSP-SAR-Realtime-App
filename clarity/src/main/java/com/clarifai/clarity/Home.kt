@@ -41,11 +41,9 @@ import java.util.*
 import java.io.IOException
 import android.widget.Toast;
 import android.os.Environment
-import android.util.JsonWriter
-import java.nio.file.Files
-import kotlin.math.log
-
 import org.json.*
+
+import android.location.*
 
 
 /**
@@ -88,7 +86,6 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
         loadingScreen(show = true)
         setSupportActionBar(findViewById(R.id.my_toolbar))
 
-
         val sharedPreferences = this.getSharedPreferences(getString(R.string.shared_preferences_key), Context.MODE_PRIVATE)
         val missingKey = getString(R.string.missing_api_key)
         val apiKey = sharedPreferences.getString(getString(R.string.shared_preferences_api_key), missingKey)
@@ -113,6 +110,8 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
 
         R.id.gallery -> {
+            val intent = Intent(this, Graph_view::class.java)
+            startActivity(intent)
             Toast.makeText(this, "Gallery Clicked", Toast.LENGTH_SHORT).show()
             true
         }
@@ -240,6 +239,7 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
     }
 
     private fun bitmapToFile(bitmap:Bitmap, outputs: List<Array<String>>): Uri {
+        periodicPrediction.Change_RFR(1000)
         // Get the context wrapper
         val wrapper = ContextWrapper(applicationContext)
 
@@ -260,7 +260,7 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
             bitmap.compress(Bitmap.CompressFormat.JPEG,100,stream)
             stream.flush()
             stream.close()
-            SaveData(outputs, file.name)
+            SaveData(outputs, file.absolutePath)
         }catch (e:IOException){
             e.printStackTrace()
         }
@@ -289,7 +289,8 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
             obj.put(value[0], value[1])
         }
         try{
-            file.appendText(obj.toString())
+            file.appendText(obj.toString()+";")
+
         }catch (e:IOException){
             e.printStackTrace()
         }
