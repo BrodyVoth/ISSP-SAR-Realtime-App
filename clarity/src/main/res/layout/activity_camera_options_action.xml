@@ -13,18 +13,20 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/settings_title"
-        android:textSize="20sp">
+        android:textSize="20sp"
+        android:paddingLeft="15dp">
     </TextView>
     <RadioGroup
         android:id="@+id/radio_group_intervals"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:paddingLeft="30dp"/>
 
     <FrameLayout
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingTop="50dp">
+        android:paddingTop="30dp">
     </FrameLayout>
 
 </LinearLayout>
