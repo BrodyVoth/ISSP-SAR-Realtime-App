@@ -2,11 +2,11 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:drawable="@color/colorGray"/>
+        android:drawable="@color/colorBlue"/>
     <item>
         <bitmap
             android:gravity="center"
-            android:src="@drawable/clarifai_logo"/>
+            android:src="@drawable/searchlight_icon"/>
     </item>
 
 </layer-list>

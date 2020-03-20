@@ -34,6 +34,7 @@ class OptionsAction : AppCompatActivity() {
 
         R.id.gallery -> {
             val intent = Intent(this, Graph_view::class.java)
+            startActivity(intent)
             Toast.makeText(this, "Gallery Clicked", Toast.LENGTH_SHORT).show()
             true
         }

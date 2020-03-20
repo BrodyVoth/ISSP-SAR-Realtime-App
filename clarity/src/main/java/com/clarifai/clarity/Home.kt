@@ -44,7 +44,9 @@ import android.os.Environment
 import org.json.*
 
 import android.location.*
-
+import java.time.Instant
+import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
 
 /**
  * Home.kt
@@ -239,19 +241,19 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
     }
 
     private fun bitmapToFile(bitmap:Bitmap, outputs: List<Array<String>>): Uri {
-        periodicPrediction.Change_RFR(1000)
+        //periodicPrediction.Change_RFR(1000)
         // Get the context wrapper
         val wrapper = ContextWrapper(applicationContext)
 
         //Check if file exists
-        var dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES+"/SarApp")
+        var dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES+"/SearchLight")
         if (!dir.exists()){
             Log.d(TAG, "Directory did not exist creating:"+dir.absolutePath)
             dir.mkdir()
         }
 
         // Initialize a new file instance to save bitmap object
-        var file = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES+"/SarApp")
+        var file = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES+"/SearchLight")
         file = File(file,"${UUID.randomUUID()}.jpg")
 
         try{
@@ -264,7 +266,6 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
         }catch (e:IOException){
             e.printStackTrace()
         }
-
         // Return the saved bitmap uri
          Log.d(TAG, file.absolutePath)
         return Uri.parse(file.absolutePath)
@@ -272,18 +273,19 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
 
     private fun SaveData(outputs: List<Array<String>>, filepath: String): String {
 
-        var dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES+"/SarApp")
+        var dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES+"/SearchLight")
         if (!dir.exists()){
             Log.d(TAG, "Directory did not exist creating:"+dir.absolutePath)
             dir.mkdir()
         }
-        var file = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES+"/SarApp")
+        var file = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES+"/SearchLight")
         file = File(file,"PredictionData.json")
 
 
         //make json prototype
         var obj = JSONObject()
         obj.put("Filename",filepath)
+        obj.put("TimeStamp", DateTimeFormatter.ISO_INSTANT.withZone(ZoneOffset.UTC).format(Instant.now()))
         for(value in outputs) {
             Log.d(TAG, value.joinToString())
             obj.put(value[0], value[1])

@@ -11,12 +11,14 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/clarifai_logo"
+        android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:roundIcon="@drawable/clarifai_logo"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/NoActionBar">
-        <activity android:name=".Graph_view"></activity>
+
+        <activity android:name=".Graph_view" android:screenOrientation="portrait">
+        </activity>
         <activity android:name=".OptionsAction" />
         <activity
             android:name=".PreloadActivity"
