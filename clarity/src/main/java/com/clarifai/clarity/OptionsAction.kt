@@ -53,6 +53,8 @@ class OptionsAction : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
 
         R.id.gallery -> {
+            val intent = Intent(this, Graph_view::class.java)
+            startActivity(intent)
             Toast.makeText(this, "Gallery Clicked", Toast.LENGTH_SHORT).show()
             true
         }

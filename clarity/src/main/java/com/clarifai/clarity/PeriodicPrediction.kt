@@ -180,6 +180,11 @@ class PeriodicPrediction internal constructor(
         }
     }
 
+    fun Change_RFR(int:Int){
+        REFRESH_RATE_MS = int
+        Log.d(TAG, REFRESH_RATE_MS.toString())
+    }
+
     internal interface PredictionTriggers {
         fun onReceivedPredictions(outputs: List<Array<String>>)
         fun modelLoaded()
