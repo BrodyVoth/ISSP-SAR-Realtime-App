@@ -113,7 +113,6 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
 
         PeriodicPrediction.REFRESH_RATE_MS = savedInterval
         }
-
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu,menu)
         return true
@@ -140,7 +139,6 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
             super.onOptionsItemSelected(item)
         }
     }
-
     override fun onResume() {
         super.onResume()
         if (!havePermissions()) {
@@ -150,22 +148,18 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
         }
         onResumeAfterPermissions()
     }
-
     override fun onPause() {
         super.onPause()
         periodicPrediction.onPause()
     }
-
     override fun onStop() {
         super.onStop()
         cameraControl.onStop()
     }
-
     private fun setupWindow() {
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
     }
-
     private fun findViews() {
         textureView = findViewById(R.id.texture)
         recyclerView = findViewById(R.id.concepts_list_rv)
@@ -176,7 +170,6 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
         builder.setView(R.layout.progress)
         dialog = builder.create()
     }
-
     private fun loadingScreen(show: Boolean) {
         Log.d(TAG, "Changing the state of loading screen to $show")
         if (show)
@@ -184,7 +177,6 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
         else
             dialog.dismiss()
     }
-
     @SuppressLint("MissingPermission")
     private fun onCreateAfterPermissions() {
         Log.d(TAG, "Have permission from requesting with onCreate")
@@ -192,7 +184,6 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
         periodicPrediction = PeriodicPrediction(this)
 
     }
-
     @SuppressLint("MissingPermission")
     private fun onResumeAfterPermissions() {
         if (periodicPrediction.isModelLoaded) {
@@ -200,11 +191,9 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
             periodicPrediction.onResume()
         }
     }
-
     private fun havePermissions(): Boolean {
         return ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
     }
-
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         try {
@@ -219,7 +208,6 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
         }
 
     }
-
     override fun onReceivedPredictions(outputs: List<Array<String>>) {
         runOnUiThread {
             if (outputs.isNotEmpty()) {
@@ -228,7 +216,6 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
             }
         }
     }
-
     override fun modelLoaded() {
         Log.d(TAG, "Loaded the model")
         runOnUiThread {
@@ -236,19 +223,13 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
             onResumeAfterPermissions()
         }
     }
-
     override fun captureBitmap(): Bitmap? {
         if (cameraControl.isCameraSetup()) {
             return cameraControl.bitmap
         }
         return null
     }
-
     private fun bitmapToFile(bitmap:Bitmap, outputs: List<Array<String>>): Uri {
-        //periodicPrediction.Change_RFR(1000)
-        // Get the context wrapper
-        //val wrapper = ContextWrapper(applicationContext)
-
         //Check if file exists
         var dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES+"/SearchLight")
         if (!dir.exists()){
@@ -274,9 +255,7 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
          Log.d(TAG, file.absolutePath)
         return Uri.parse(file.absolutePath)
     }
-
     private fun SaveData(outputs: List<Array<String>>, filepath: String): String {
-
         var dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES+"/SearchLight")
         if (!dir.exists()){
             Log.d(TAG, "Directory did not exist creating:"+dir.absolutePath)
@@ -310,7 +289,6 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
         prefs = context.getSharedPreferences("IntervalPrefs", Context.MODE_PRIVATE)
         return prefs.getString("Interval Strings", "default")
     }
-
     companion object {
         private val TAG = Home::class.java.simpleName
         private const val WRITE_REQUEST_CODE_INIT = 201

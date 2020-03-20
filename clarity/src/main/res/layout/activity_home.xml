@@ -23,9 +23,9 @@
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/concepts_list_rv"
-            android:layout_width="164dp"
-            android:layout_height="220dp"
-            android:layout_marginBottom="404dp"
+            android:layout_width="189dp"
+            android:layout_height="256dp"
+            android:layout_marginBottom="364dp"
             android:alpha="0.5"
             android:padding="10dp"
             android:rotation="0"
