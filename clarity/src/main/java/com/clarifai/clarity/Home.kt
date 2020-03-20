@@ -25,14 +25,13 @@ import android.support.v4.app.ActivityCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
 import android.util.Log
-import android.widget.Button
 import com.clarifai.clarifai_android_sdk.core.Clarifai
 import android.support.v7.app.AlertDialog
-import kotlinx.android.synthetic.main.activity_home.*
 import android.content.Intent
 
 import android.net.Uri
 import android.content.ContextWrapper
+import android.content.SharedPreferences
 import android.view.*
 import java.io.File
 import java.io.OutputStream
@@ -41,8 +40,6 @@ import java.util.*
 import java.io.IOException
 import android.widget.Toast;
 import android.os.Environment
-import java.nio.file.Files
-import kotlin.math.log
 
 
 /**
@@ -68,6 +65,7 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
     private lateinit var textureView: TextureView
     private lateinit var outputControl: OutputControl
     private lateinit var dialog: AlertDialog
+    private lateinit var prefs: SharedPreferences
 
 
     private lateinit var cameraControl: CameraControl
@@ -77,6 +75,7 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
     private val IMAGE_CAPTURE_CODE = 1001
     var image_uri: Uri? = null
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupWindow()
@@ -84,6 +83,11 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
         findViews()
         loadingScreen(show = true)
         setSupportActionBar(findViewById(R.id.my_toolbar))
+        prefs = this.getSharedPreferences("IntervalPrefs", Context.MODE_PRIVATE)
+        val savedInterval = getInterval(this)
+        Toast.makeText(this, "Saved Interval: " + savedInterval, Toast.LENGTH_SHORT).show()
+
+
 
 
         val sharedPreferences = this.getSharedPreferences(getString(R.string.shared_preferences_key), Context.MODE_PRIVATE)
@@ -100,7 +104,9 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
             return
         }
         onCreateAfterPermissions()
+        periodicPrediction = PeriodicPrediction(this)
 
+        PeriodicPrediction.REFRESH_RATE_MS = savedInterval
         }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -287,6 +293,10 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
             e.printStackTrace()
         }
         return "made it"
+    }
+    fun getInterval(context: Context): Int {
+        prefs = context.getSharedPreferences("IntervalPrefs", Context.MODE_PRIVATE)
+        return prefs.getInt("Picture Intervals", 0)
     }
 
 

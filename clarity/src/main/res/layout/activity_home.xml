@@ -21,16 +21,11 @@
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/concepts_list_rv"
-<<<<<<< HEAD
             android:layout_width="62dp"
             android:layout_height="235dp"
             android:layout_marginBottom="419dp"
-=======
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:layout_marginTop="48dp"
             android:layout_marginEnd="4dp"
->>>>>>> 7a0a3314a009aeaa586d726bfd1ecb8713d4fa4d
             android:alpha="0.5"
             android:padding="10dp"
             android:rotation="0"
@@ -43,12 +38,5 @@
             layout="@layout/toolbar"
             android:id="@+id/my_toolbar">
         </include>
-
-    app:layout_constraintTop_toBottomOf="@+id/texture"
-    app:layout_constraintVertical_bias="0.78" />
     </android.support.constraint.ConstraintLayout>
-<<<<<<< HEAD
 </android.support.design.widget.CoordinatorLayout>
-=======
-</android.support.design.widget.CoordinatorLayout>
->>>>>>> 7a0a3314a009aeaa586d726bfd1ecb8713d4fa4d
