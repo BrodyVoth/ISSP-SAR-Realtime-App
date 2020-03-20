@@ -10,19 +10,34 @@
     <string name="api_dialog_prompt">Please enter your API Key:</string>
     <string name="api_dialog_finished">Finished</string>
     <string name="loading_model">Loading model, please wait…</string>
+    <string name="pref_5000_interval_value">5000</string>
     <string name="adjust_time_interval">Photo Interval</string>
+    <string name="Interval_1">5 seconds</string>
+    <string name="Interval_2">10 seconds</string>
+    <string name="Interval_3">15 seconds</string>
     <string name="interval_summary">
         Change how often photos are taken during the session
     </string>
+    <string name="SearchLight_Website_Link">SearchLight Website Link</string>
+    <string name="SearchLight_Website">http://www.sartechnology.ca/sartechnology/ImageRecognitionSearch2/ImageRecognitionSearch7.html</string>
     <string name="default_interval">5 seconds</string>
+    <string name="settings_title">Choose the Time Interval for Taking Pictures</string>
     <string-array name="time_intervals">
+        <item>0.5 seconds</item>
+        <item>1 seconds</item>
+        <item>2 seconds</item>
         <item>5 seconds</item>
         <item>10 seconds</item>
-        <item>15 seconds</item>
+        <item>30 seconds</item>
+        <item>60 seconds</item>
     </string-array>
     <string-array name="time_intervals_values">
-        <item>5 seconds</item>
-        <item>10 seconds</item>
-        <item>15 seconds</item>
+        <item>500</item>
+        <item>1000</item>
+        <item>2000</item>
+        <item>5000</item>
+        <item>10000</item>
+        <item>30000</item>
+        <item>60000</item>
     </string-array>
 </resources>

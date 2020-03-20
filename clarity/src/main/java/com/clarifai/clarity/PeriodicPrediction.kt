@@ -18,24 +18,22 @@ package com.clarifai.clarity
 
 import android.app.Activity
 import android.content.Context
-import android.content.ContextWrapper
 import android.graphics.Bitmap
 import android.os.Handler
 import android.util.Log
 
-import android.content.Intent
-import android.provider.MediaStore
-import android.content.pm.PackageManager
-import android.net.Uri
+
+import android.content.SharedPreferences
 
 import com.clarifai.clarifai_android_sdk.dataassets.Image
-import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
-import java.io.OutputStream
-import java.util.*
 import java.util.concurrent.BlockingQueue
 import java.util.concurrent.LinkedBlockingQueue
+import android.app.Application
+import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+
+
+
+
 
 /**
  * PeriodicPrediction.kt
@@ -44,12 +42,17 @@ import java.util.concurrent.LinkedBlockingQueue
  * Copyright © 2018 Clarifai. All rights reserved.
  */
 
-class PeriodicPrediction internal constructor(homeActivity: Activity) {
+class PeriodicPrediction internal constructor(
+        homeActivity: Activity) {
     private val useJavaHandler = false
     internal var isModelLoaded: Boolean = false
+    private lateinit var context: Context
 
     private lateinit var capturePeriodicHandler: Handler
+    private lateinit var applicationContextProvider: ApplicationContextProvider
+
     private lateinit var predictionPeriodicHandler: Handler
+    private lateinit var prefs: SharedPreferences
     private val captureQueues: BlockingQueue<QueueData>
     private var homeActivityCallbacks: PredictionTriggers
 
@@ -66,6 +69,7 @@ class PeriodicPrediction internal constructor(homeActivity: Activity) {
     private inner class QueueData internal constructor(var image: Image, var timeInMs: Long)
 
     init {
+
         try {
             homeActivityCallbacks = homeActivity as PredictionTriggers
         } catch (cce: ClassCastException) {
@@ -97,6 +101,7 @@ class PeriodicPrediction internal constructor(homeActivity: Activity) {
     }
 
     internal fun onResume() {
+
         capturePeriodicHandler = Handler()
         capturePeriodicHandler.post(object : Runnable {
             override fun run() {
@@ -113,11 +118,17 @@ class PeriodicPrediction internal constructor(homeActivity: Activity) {
             }
         })
 
+        Log.d("Picture Interval", REFRESH_RATE_MS.toString())
+
         predictionPeriodicHandler = Handler()
+
+
+
 
         predictionPeriodicHandler.post(object : Runnable {
             override fun run() {
                 Log.d(TAG, "Bitmap queue size: " + captureQueues.size)
+                Log.d("Time Interval", "referesh_rate: " + REFRESH_RATE_MS.toString())
                 if (!captureQueues.isEmpty() && !isPredictionRunning) {
                     try {
                         if (captureQueues.size > 4) {
@@ -139,12 +150,14 @@ class PeriodicPrediction internal constructor(homeActivity: Activity) {
                 Log.d(TAG, "Bitmap queue size after: " + captureQueues.size)
             }
         })
+
     }
 
     internal fun onPause() {
         capturePeriodicHandler.removeCallbacksAndMessages(null)
         predictionPeriodicHandler.removeCallbacksAndMessages(null)
     }
+
 
     private fun predictWithImage(image: Image) {
         if (useJavaHandler) {
@@ -178,8 +191,26 @@ class PeriodicPrediction internal constructor(homeActivity: Activity) {
         fun captureBitmap(): Bitmap?
     }
 
-    companion object Values {
-        var REFRESH_RATE_MS = 3000
+
+
+
+    companion object {
+        var REFRESH_RATE_MS = 5000
         private val TAG = PeriodicPrediction::class.java.simpleName
     }
 }
+
+class ApplicationContextProvider : Application() {
+
+    private var mContext: Context? = null
+
+    fun getContext(): Context? {
+        return mContext
+    }
+
+    fun setContext(mContext: Context) {
+        this.mContext = mContext
+    }
+}
+
+
