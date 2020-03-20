@@ -85,7 +85,8 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
         setSupportActionBar(findViewById(R.id.my_toolbar))
         prefs = this.getSharedPreferences("IntervalPrefs", Context.MODE_PRIVATE)
         val savedInterval = getInterval(this)
-        Toast.makeText(this, "Saved Interval: " + savedInterval, Toast.LENGTH_SHORT).show()
+        val savedString = getIntString(this)
+        Toast.makeText(this, "Saved Interval: " + savedString, Toast.LENGTH_SHORT).show()
 
 
 
@@ -122,14 +123,9 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
 
         R.id.interval -> {
             Toast.makeText(this, "Interval Clicked", Toast.LENGTH_SHORT).show()
-            true
-        }
-
-        R.id.settings -> {
             val intent = Intent(this, OptionsAction::class.java)
             startActivity(intent)
             true
-
         }
 
         else -> {
@@ -296,10 +292,12 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
     }
     fun getInterval(context: Context): Int {
         prefs = context.getSharedPreferences("IntervalPrefs", Context.MODE_PRIVATE)
-        return prefs.getInt("Picture Intervals", 0)
+        return prefs.getInt("Picture Intervals", 5000)
     }
-
-
+    fun getIntString(context: Context): String? {
+        prefs = context.getSharedPreferences("IntervalPrefs", Context.MODE_PRIVATE)
+        return prefs.getString("Interval Strings", "default")
+    }
 
 
     companion object {

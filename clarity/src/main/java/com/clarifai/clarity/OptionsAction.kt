@@ -40,8 +40,7 @@ class OptionsAction : AppCompatActivity() {
         toolbar.setTitle("settings")
         createRadioButtons()
 
-        val savedInterval = getInterval(this)
-        Toast.makeText(this, "Saved Interval: " + savedInterval, Toast.LENGTH_SHORT).show()
+        fragmentManager.beginTransaction().add(R.id.fragment_container, SettingsFragment()).commit()
 
 
     }
@@ -99,6 +98,7 @@ class OptionsAction : AppCompatActivity() {
             button.setOnClickListener(View.OnClickListener {
                 Toast.makeText(this, "You clicked " + strings, Toast.LENGTH_SHORT).show()
                 saveIntervalChange(intervals)
+                saveIntervalString(strings)
             })
 
             group.addView(button)
@@ -117,6 +117,12 @@ class OptionsAction : AppCompatActivity() {
         prefs = this.getSharedPreferences("IntervalPrefs", Context.MODE_PRIVATE)
         editor = prefs.edit()
         editor.putInt("Picture Intervals", interval)
+        editor.apply()
+    }
+    private fun saveIntervalString(interval: String){
+        prefs = this.getSharedPreferences("IntervalPrefs", Context.MODE_PRIVATE)
+        editor = prefs.edit()
+        editor.putString("Interval Strings", interval)
         editor.apply()
     }
 
@@ -149,5 +155,6 @@ class OptionsAction : AppCompatActivity() {
 //                PeriodicPrediction.REFRESH_RATE_MS = 15000
 //            }
 //        }
+
     }
 

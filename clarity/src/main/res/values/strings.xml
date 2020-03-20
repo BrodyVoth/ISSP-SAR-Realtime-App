@@ -21,6 +21,7 @@
     <string name="SearchLight_Website_Link">SearchLight Website Link</string>
     <string name="SearchLight_Website">http://www.sartechnology.ca/sartechnology/ImageRecognitionSearch2/ImageRecognitionSearch7.html</string>
     <string name="default_interval">5 seconds</string>
+    <string name="settings_title">Choose the Time Interval for Taking Pictures</string>
     <string-array name="time_intervals">
         <item>0.5 seconds</item>
         <item>1 seconds</item>
