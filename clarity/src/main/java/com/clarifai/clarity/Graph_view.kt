@@ -63,18 +63,12 @@ class Graph_view : AppCompatActivity() {
         }
 
         R.id.gallery -> {
-            val intent = Intent(this, Graph_view::class.java)
-            startActivity(intent)
-            Toast.makeText(this, "Gallery Clicked", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "You are already here", Toast.LENGTH_SHORT).show()
             true
         }
 
         R.id.interval -> {
             Toast.makeText(this, "Interval Clicked", Toast.LENGTH_SHORT).show()
-            true
-        }
-
-        R.id.settings -> {
             val intent = Intent(this, OptionsAction::class.java)
             startActivity(intent)
             true

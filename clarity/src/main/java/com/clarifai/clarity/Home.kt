@@ -247,7 +247,7 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
     private fun bitmapToFile(bitmap:Bitmap, outputs: List<Array<String>>): Uri {
         //periodicPrediction.Change_RFR(1000)
         // Get the context wrapper
-        val wrapper = ContextWrapper(applicationContext)
+        //val wrapper = ContextWrapper(applicationContext)
 
         //Check if file exists
         var dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES+"/SearchLight")
