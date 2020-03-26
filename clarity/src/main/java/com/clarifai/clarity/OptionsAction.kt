@@ -1,6 +1,7 @@
 package com.clarifai.clarity
 
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Build
@@ -9,22 +10,23 @@ import android.os.Bundle
 import android.preference.*
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Toast
-import android.widget.Toolbar
 import java.util.prefs.PreferenceChangeListener
 import android.preference.PreferenceFragment
 import android.support.annotation.RequiresApi
+import android.support.v7.app.AlertDialog
 import android.view.View
-import android.widget.RadioButton
-import android.widget.RadioGroup
+import android.widget.*
 import com.clarifai.clarifai_android_sdk.utils.Log
+import java.lang.IllegalArgumentException
 import java.lang.reflect.Array
 
 class OptionsAction : AppCompatActivity() {
 
 
     private lateinit var toolbar: android.support.v7.widget.Toolbar
-
+    private lateinit var text: TextView
+    private lateinit var builder: AlertDialog.Builder
+    private lateinit var dialog: AlertDialog
 
 
 
@@ -38,11 +40,38 @@ class OptionsAction : AppCompatActivity() {
         setSupportActionBar(toolbar)
 
         toolbar.setTitle("settings")
-        createRadioButtons()
+        text = findViewById(R.id.click)
+        text.setOnClickListener(View.OnClickListener {
+            showAlertDialog()
+        })
 
         fragmentManager.beginTransaction().add(R.id.fragment_container, SettingsFragment()).commit()
 
 
+    }
+
+    private fun showAlertDialog() {
+        builder = AlertDialog.Builder(this)
+        builder.setTitle("Time Intervals")
+        val intervalOptions: IntArray = resources.getIntArray(R.array.picture_intervals)
+        val intervalStrings = resources.getStringArray(R.array.time_intervals)
+        val checkedItem = 1
+        builder.setSingleChoiceItems(intervalStrings, checkedItem, {_,which->
+            val intervals = intervalOptions[which]
+            val strings = intervalStrings[which]
+
+            try {
+                Toast.makeText(this, "You clicked " + strings, Toast.LENGTH_SHORT).show()
+                saveIntervalChange(intervals)
+                saveIntervalString(strings)
+            } catch (e: IllegalArgumentException){
+                Toast.makeText(this, "There was an error changing the interval", Toast.LENGTH_SHORT).show()
+            }
+            dialog.dismiss()
+        })
+         dialog = builder.create()
+
+        dialog.show()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -77,44 +106,9 @@ class OptionsAction : AppCompatActivity() {
             super.onOptionsItemSelected(item)
         }
     }
-
-    private lateinit var group: RadioGroup
-    private lateinit var button: RadioButton
     private lateinit var prefs: SharedPreferences
     private lateinit var editor: SharedPreferences.Editor
-    private fun createRadioButtons() {
 
-        group = findViewById(R.id.radio_group_intervals)
-        val intervalOptions: IntArray = resources.getIntArray(R.array.picture_intervals)
-        val intervalStrings = resources.getStringArray(R.array.time_intervals)
-
-        for(i in 0 until intervalOptions.size) {
-            val intervals = intervalOptions[i]
-            val strings = intervalStrings[i]
-
-            button = RadioButton(this)
-
-            button.setText(strings)
-
-
-            button.setOnClickListener(View.OnClickListener {
-                Toast.makeText(this, "You clicked " + strings, Toast.LENGTH_SHORT).show()
-                saveIntervalChange(intervals)
-                saveIntervalString(strings)
-            })
-
-            group.addView(button)
-
-
-            if (intervals == getInterval(this)) {
-                button.isChecked
-            }
-        }
-
-
-
-
-    }
     private fun saveIntervalChange(interval: Int){
         prefs = this.getSharedPreferences("IntervalPrefs", Context.MODE_PRIVATE)
         editor = prefs.edit()
@@ -126,11 +120,6 @@ class OptionsAction : AppCompatActivity() {
         editor = prefs.edit()
         editor.putString("Interval Strings", interval)
         editor.apply()
-    }
-
-    fun getInterval(context: Context): Int {
-        prefs = context.getSharedPreferences("IntervalPrefs", Context.MODE_PRIVATE)
-        return prefs.getInt("Picture Intervals", 0)
     }
 
 
