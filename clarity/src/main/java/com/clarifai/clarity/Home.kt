@@ -47,6 +47,9 @@ import java.time.Instant
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 
+import android.location.*
+import kotlin.collections.ArrayList
+
 /**
  * Home.kt
  * Clarity
@@ -54,13 +57,14 @@ import java.time.format.DateTimeFormatter
  * Copyright © 2018 Clarifai. All rights reserved.
  */
 class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraControl.CameraControlTriggers {
+
     override fun getCameraPermission() {
         if (!havePermissions()) {
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), CAMERA_REQUEST_CODE_INIT)
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), WRITE_REQUEST_CODE_INIT)
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION), CAMERA_REQUEST_CODE_INIT)
             return
         }
     }
+
 
     override fun checkCameraPermission(): Boolean {
         return havePermissions()
@@ -72,7 +76,6 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
     private lateinit var dialog: AlertDialog
     private lateinit var prefs: SharedPreferences
 
-
     private lateinit var cameraControl: CameraControl
     private lateinit var periodicPrediction: PeriodicPrediction
 
@@ -80,8 +83,10 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
     private val IMAGE_CAPTURE_CODE = 1001
     var image_uri: Uri? = null
 
+    private var locationManager : LocationManager? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         setupWindow()
         setContentView(R.layout.activity_home)
@@ -92,33 +97,39 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
         val savedInterval = getInterval(this)
         val savedString = getIntString(this)
         Toast.makeText(this, "Saved Interval: " + savedString, Toast.LENGTH_SHORT).show()
-
-
-
         val sharedPreferences = this.getSharedPreferences(getString(R.string.shared_preferences_key), Context.MODE_PRIVATE)
         val missingKey = getString(R.string.missing_api_key)
         val apiKey = sharedPreferences.getString(getString(R.string.shared_preferences_api_key), missingKey)
+
         outputControl = OutputControl(this.applicationContext, recyclerView)
 
         Clarifai.start(this, apiKey)
 
         if (!havePermissions()) {
             Log.d(TAG, "No permission. So, asking for it")
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), CAMERA_REQUEST_CODE_INIT)
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), WRITE_REQUEST_CODE_INIT)
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION), CAMERA_REQUEST_CODE_INIT)
             return
         }
+
+        locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager?
+
         onCreateAfterPermissions()
         periodicPrediction = PeriodicPrediction(this)
 
-        PeriodicPrediction.REFRESH_RATE_MS = savedInterval
+        try {
+            var location = locationManager?.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+            Log.d("LOCATION", location.toString())
+        } catch (e: SecurityException) {
+            Log.d("Error", "ERROR!")
         }
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+    }
+
+        override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu,menu)
         return true
     }
-    override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
 
+    override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.gallery -> {
             val intent = Intent(this, Graph_view::class.java)
             startActivity(intent)
@@ -142,8 +153,7 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
     override fun onResume() {
         super.onResume()
         if (!havePermissions()) {
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), CAMERA_REQUEST_CODE_RESUME)
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), WRITE_REQUEST_CODE_RESUME)
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION), CAMERA_REQUEST_CODE_INIT)
             return
         }
         onResumeAfterPermissions()
@@ -182,7 +192,6 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
         Log.d(TAG, "Have permission from requesting with onCreate")
         cameraControl = CameraControl(textureView, getSystemService(Context.CAMERA_SERVICE) as CameraManager, this)
         periodicPrediction = PeriodicPrediction(this)
-
     }
     @SuppressLint("MissingPermission")
     private fun onResumeAfterPermissions() {
@@ -264,11 +273,16 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
         var file = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES+"/SearchLight")
         file = File(file,"PredictionData.json")
 
+        //GetLocation
+        val location = GetLocation()
 
         //make json prototype
         var obj = JSONObject()
         obj.put("Filename",filepath)
         obj.put("TimeStamp", DateTimeFormatter.ISO_INSTANT.withZone(ZoneOffset.UTC).format(Instant.now()))
+        obj.put("X",location[0])
+        obj.put("Y",location[1])
+
         for(value in outputs) {
             Log.d(TAG, value.joinToString())
             obj.put(value[0], value[1])
@@ -281,6 +295,7 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
         }
         return "Done"
     }
+
     fun getInterval(context: Context): Int {
         prefs = context.getSharedPreferences("IntervalPrefs", Context.MODE_PRIVATE)
         return prefs.getInt("Picture Intervals", 5000)
@@ -289,11 +304,35 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
         prefs = context.getSharedPreferences("IntervalPrefs", Context.MODE_PRIVATE)
         return prefs.getString("Interval Strings", "default")
     }
+
+
+    private fun GetLocation(): List<String>{
+        var coord = ArrayList<String>()
+        try{
+            val location = locationManager?.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+            Log.d("LOCATION",location?.latitude.toString())
+            var lat = location?.latitude.toString()
+            Log.d("LOCATION",location?.longitude.toString())
+            var log = location?.longitude.toString()
+            coord.add(0, lat)
+            coord.add(1, log)
+        }
+        catch(e:SecurityException){
+            Log.d("LOCATION","ERROR!")
+            coord.add(0, "0.00")
+            coord.add(1, "0.00")
+        }
+        return coord
+    }
+    
     companion object {
         private val TAG = Home::class.java.simpleName
-        private const val WRITE_REQUEST_CODE_INIT = 201
-        private const val WRITE_REQUEST_CODE_RESUME = 202
+        private const val WRITE_REQUEST_CODE_INIT = 101
+        private const val WRITE_REQUEST_CODE_RESUME = 102
         private const val CAMERA_REQUEST_CODE_INIT = 101
         private const val CAMERA_REQUEST_CODE_RESUME = 102
+        private const val LOCATION_REQUEST_CODE_INIT = 101
+        private const val LOCATION_REQUEST_CODE_RESUME = 102
+
     }
 }
