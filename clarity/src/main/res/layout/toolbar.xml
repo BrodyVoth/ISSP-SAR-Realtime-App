@@ -6,7 +6,12 @@
     android:layout_height="65dp"
     android:background="?attr/colorPrimary"
     android:elevation="4dp"
-    android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+    android:theme="@style/ToolBarStyle"
     app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="25dp"
+        android:src="@drawable/searchlight_icon"/>
+
 
 </android.support.v7.widget.Toolbar>
