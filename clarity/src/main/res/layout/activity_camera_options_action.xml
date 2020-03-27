@@ -40,5 +40,7 @@
         android:id="@+id/textView3"
         android:layout_width="match_parent"
         android:layout_height="37dp"
-        android:text="@string/copyright" />
+        android:text="@string/copyright"
+        android:textColor="@color/colorBlue"
+        android:textAlignment="center"/>
 </LinearLayout>

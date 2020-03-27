@@ -48,6 +48,7 @@ import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 
 import android.location.*
+import android.widget.TextView
 import kotlin.collections.ArrayList
 
 /**
@@ -75,6 +76,7 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
     private lateinit var outputControl: OutputControl
     private lateinit var dialog: AlertDialog
     private lateinit var prefs: SharedPreferences
+    private lateinit var textView: TextView
 
     private lateinit var cameraControl: CameraControl
     private lateinit var periodicPrediction: PeriodicPrediction
@@ -302,7 +304,7 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
     }
     fun getIntString(context: Context): String? {
         prefs = context.getSharedPreferences("IntervalPrefs", Context.MODE_PRIVATE)
-        return prefs.getString("Interval Strings", "default")
+        return prefs.getString("Interval Strings", "5 seconds")
     }
 
 

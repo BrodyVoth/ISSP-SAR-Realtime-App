@@ -12,7 +12,7 @@
     <string name="loading_model">Loading model, please wait…</string>
     <string name="pref_5000_interval_value">5000</string>
     <string name="adjust_time_interval">Photo Interval</string>
-    <string name="copyright">Copyright SAR Technology Inc</string>
+    <string name="copyright">Copyright SAR Technology Inc ©</string>
     <string name="Interval_1">5 seconds</string>
     <string name="Interval_2">10 seconds</string>
     <string name="Interval_3">15 seconds</string>
