@@ -58,13 +58,15 @@ import kotlin.collections.ArrayList
  * Copyright © 2018 Clarifai. All rights reserved.
  */
 class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraControl.CameraControlTriggers {
+
     override fun getCameraPermission() {
         if (!havePermissions()) {
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), CAMERA_REQUEST_CODE_INIT)
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), WRITE_REQUEST_CODE_INIT)
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION), CAMERA_REQUEST_CODE_INIT)
             return
         }
     }
+
+
     override fun checkCameraPermission(): Boolean {
         return havePermissions()
     }
@@ -73,7 +75,6 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
     private lateinit var textureView: TextureView
     private lateinit var outputControl: OutputControl
     private lateinit var dialog: AlertDialog
-
 
     private lateinit var cameraControl: CameraControl
     private lateinit var periodicPrediction: PeriodicPrediction
@@ -85,6 +86,7 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
     private var locationManager : LocationManager? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         setupWindow()
         setContentView(R.layout.activity_home)
@@ -95,37 +97,34 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
         val missingKey = getString(R.string.missing_api_key)
         val apiKey = sharedPreferences.getString(getString(R.string.shared_preferences_api_key), missingKey)
 
-        locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager?
-
         outputControl = OutputControl(this.applicationContext, recyclerView)
 
         Clarifai.start(this, apiKey)
 
         if (!havePermissions()) {
             Log.d(TAG, "No permission. So, asking for it")
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), CAMERA_REQUEST_CODE_INIT)
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), WRITE_REQUEST_CODE_INIT)
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION), LOCATION_REQUEST_CODE_INIT)
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION), CAMERA_REQUEST_CODE_INIT)
             return
         }
 
+        locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager?
+
         onCreateAfterPermissions()
-        try{
+
+        try {
             var location = locationManager?.getLastKnownLocation(LocationManager.GPS_PROVIDER)
-            Log.d("LOCATION",location.toString())
-        }
-        catch(e:SecurityException){
-            Log.d("Error","ERROR!")
+            Log.d("LOCATION", location.toString())
+        } catch (e: SecurityException) {
+            Log.d("Error", "ERROR!")
         }
     }
 
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu,menu)
         return true
     }
-    override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
 
+    override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.gallery -> {
             val intent = Intent(this, Graph_view::class.java)
             startActivity(intent)
@@ -155,8 +154,7 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
     override fun onResume() {
         super.onResume()
         if (!havePermissions()) {
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), CAMERA_REQUEST_CODE_RESUME)
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), WRITE_REQUEST_CODE_RESUME)
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION), CAMERA_REQUEST_CODE_INIT)
             return
         }
         onResumeAfterPermissions()
@@ -201,7 +199,6 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
         Log.d(TAG, "Have permission from requesting with onCreate")
         cameraControl = CameraControl(textureView, getSystemService(Context.CAMERA_SERVICE) as CameraManager, this)
         periodicPrediction = PeriodicPrediction(this)
-
     }
 
     @SuppressLint("MissingPermission")
@@ -337,8 +334,6 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
         }
         return coord
     }
-
-
 
     companion object {
         private val TAG = Home::class.java.simpleName

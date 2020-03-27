@@ -172,17 +172,20 @@ class Graph_view : AppCompatActivity() {
         val objstr = obj.toString().replace("{","").split(',')
         var path = objstr[0].replace("\\","")+"\n"
         var path1 = path.split("/")
-        filestr = "FilePath:\n"+path1.last()+"\n"
-        filestr += objstr[1]
+        filestr += "FilePath:\n"+path1.last()
+        filestr += objstr[1]+"\n\n"
+        filestr += objstr[2]+"\n"
+        filestr += objstr[3]+"\n"
         filestr.replace(Regex("\""),"")
 
-        tagstr = objstr[2]+"\n"
-        tagstr += objstr[3]+"\n"
+
         tagstr += objstr[4]+"\n"
         tagstr += objstr[5]+"\n"
-        tagstr += objstr[6]
+        tagstr += objstr[6]+"\n"
+        tagstr += objstr[7]+"\n"
+        tagstr += objstr[8]
         tagstr.replace(Regex("\""),"")
-        tagstr.replace("}","")
+        tagstr.replace("}",",")
 
         fileinfo.text = filestr
         predictioninfo.text = tagstr
