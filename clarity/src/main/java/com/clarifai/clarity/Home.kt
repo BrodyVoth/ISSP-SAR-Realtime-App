@@ -48,6 +48,9 @@ import java.time.Instant
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 
+import android.location.*
+import kotlin.collections.ArrayList
+
 /**
  * Home.kt
  * Clarity
@@ -62,7 +65,6 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
             return
         }
     }
-
     override fun checkCameraPermission(): Boolean {
         return havePermissions()
     }
@@ -80,6 +82,8 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
     private val IMAGE_CAPTURE_CODE = 1001
     var image_uri: Uri? = null
 
+    private var locationManager : LocationManager? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupWindow()
@@ -87,10 +91,12 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
         findViews()
         loadingScreen(show = true)
         setSupportActionBar(findViewById(R.id.my_toolbar))
-
         val sharedPreferences = this.getSharedPreferences(getString(R.string.shared_preferences_key), Context.MODE_PRIVATE)
         val missingKey = getString(R.string.missing_api_key)
         val apiKey = sharedPreferences.getString(getString(R.string.shared_preferences_api_key), missingKey)
+
+        locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager?
+
         outputControl = OutputControl(this.applicationContext, recyclerView)
 
         Clarifai.start(this, apiKey)
@@ -99,11 +105,20 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
             Log.d(TAG, "No permission. So, asking for it")
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), CAMERA_REQUEST_CODE_INIT)
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), WRITE_REQUEST_CODE_INIT)
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION), LOCATION_REQUEST_CODE_INIT)
             return
         }
-        onCreateAfterPermissions()
 
+        onCreateAfterPermissions()
+        try{
+            var location = locationManager?.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+            Log.d("LOCATION",location.toString())
         }
+        catch(e:SecurityException){
+            Log.d("Error","ERROR!")
+        }
+    }
+
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu,menu)
@@ -281,11 +296,16 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
         var file = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES+"/SearchLight")
         file = File(file,"PredictionData.json")
 
+        //GetLocation
+        val location = GetLocation()
 
         //make json prototype
         var obj = JSONObject()
         obj.put("Filename",filepath)
         obj.put("TimeStamp", DateTimeFormatter.ISO_INSTANT.withZone(ZoneOffset.UTC).format(Instant.now()))
+        obj.put("X",location[0])
+        obj.put("Y",location[1])
+
         for(value in outputs) {
             Log.d(TAG, value.joinToString())
             obj.put(value[0], value[1])
@@ -299,13 +319,35 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
         return "Done"
     }
 
+    private fun GetLocation(): List<String>{
+        var coord = ArrayList<String>()
+        try{
+            val location = locationManager?.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+            Log.d("LOCATION",location?.latitude.toString())
+            var lat = location?.latitude.toString()
+            Log.d("LOCATION",location?.longitude.toString())
+            var log = location?.longitude.toString()
+            coord.add(0, lat)
+            coord.add(1, log)
+        }
+        catch(e:SecurityException){
+            Log.d("LOCATION","ERROR!")
+            coord.add(0, "0.00")
+            coord.add(1, "0.00")
+        }
+        return coord
+    }
+
 
 
     companion object {
         private val TAG = Home::class.java.simpleName
-        private const val WRITE_REQUEST_CODE_INIT = 201
-        private const val WRITE_REQUEST_CODE_RESUME = 202
+        private const val WRITE_REQUEST_CODE_INIT = 101
+        private const val WRITE_REQUEST_CODE_RESUME = 102
         private const val CAMERA_REQUEST_CODE_INIT = 101
         private const val CAMERA_REQUEST_CODE_RESUME = 102
+        private const val LOCATION_REQUEST_CODE_INIT = 101
+        private const val LOCATION_REQUEST_CODE_RESUME = 102
+
     }
 }

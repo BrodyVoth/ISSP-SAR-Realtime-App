@@ -115,7 +115,7 @@ class Graph_view : AppCompatActivity() {
             for(key in keys){
                 var nval = JSONObject()
                 //Maps value
-                if(key != "Filename" && key != "TimeStamp"){
+                if(key != "Filename" && key != "TimeStamp" && key != "X" && key != "Y"){
                     try {
                         obj = values.getJSONArray(key)
                     }
