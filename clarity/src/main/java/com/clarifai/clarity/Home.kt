@@ -324,7 +324,7 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
         }
         return coord
     }
-    
+
     companion object {
         private val TAG = Home::class.java.simpleName
         private const val WRITE_REQUEST_CODE_INIT = 101
