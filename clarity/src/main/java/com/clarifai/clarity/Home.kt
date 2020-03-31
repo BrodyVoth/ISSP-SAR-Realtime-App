@@ -98,7 +98,7 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
         prefs = this.getSharedPreferences("IntervalPrefs", Context.MODE_PRIVATE)
         val savedInterval = getInterval(this)
         val savedString = getIntString(this)
-        Toast.makeText(this, "Saved Interval: " + savedString, Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, "Saved Interval: " + savedString, Toast.LENGTH_LONG).show()
         val sharedPreferences = this.getSharedPreferences(getString(R.string.shared_preferences_key), Context.MODE_PRIVATE)
         val missingKey = getString(R.string.missing_api_key)
         val apiKey = sharedPreferences.getString(getString(R.string.shared_preferences_api_key), missingKey)
@@ -106,6 +106,8 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
         outputControl = OutputControl(this.applicationContext, recyclerView)
 
         Clarifai.start(this, apiKey)
+
+        PeriodicPrediction.REFRESH_RATE_MS = savedInterval
 
         if (!havePermissions()) {
             Log.d(TAG, "No permission. So, asking for it")

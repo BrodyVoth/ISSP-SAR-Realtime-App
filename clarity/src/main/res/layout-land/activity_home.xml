@@ -12,7 +12,7 @@
 
         <com.clarifai.clarity.AutoFitTextureView
             android:id="@+id/texture"
-            android:layout_width="369dp"
+            android:layout_width="match_parent"
             android:layout_height="742dp"
             android:rotation="-90"
             app:layout_constraintBottom_toBottomOf="parent"
