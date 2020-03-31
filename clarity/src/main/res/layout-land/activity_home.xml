@@ -12,7 +12,7 @@
 
         <com.clarifai.clarity.AutoFitTextureView
             android:id="@+id/texture"
-            android:layout_width="match_parent"
+            android:layout_width="369dp"
             android:layout_height="742dp"
             android:rotation="-90"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -40,7 +40,5 @@
             android:id="@+id/my_toolbar"
             layout="@layout/toolbar" />
 
-        app:layout_constraintTop_toBottomOf="@+id/texture"
-        app:layout_constraintVertical_bias="0.78" />
     </android.support.constraint.ConstraintLayout>
 </android.support.design.widget.CoordinatorLayout>
