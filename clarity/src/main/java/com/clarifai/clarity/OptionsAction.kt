@@ -55,7 +55,12 @@ class OptionsAction : AppCompatActivity() {
         builder.setTitle("Time Intervals")
         val intervalOptions: IntArray = resources.getIntArray(R.array.picture_intervals)
         val intervalStrings = resources.getStringArray(R.array.time_intervals)
-        val checkedItem = 1
+        var checkedItem = 1
+        for (i in intervalStrings) {
+            if (i == getIntString(this)) {
+                checkedItem = intervalStrings.indexOf(i)
+            }
+        }
         builder.setSingleChoiceItems(intervalStrings, checkedItem, {_,which->
             val intervals = intervalOptions[which]
             val strings = intervalStrings[which]
@@ -120,6 +125,10 @@ class OptionsAction : AppCompatActivity() {
         editor = prefs.edit()
         editor.putString("Interval Strings", interval)
         editor.apply()
+    }
+    fun getIntString(context: Context): String? {
+        prefs = context.getSharedPreferences("IntervalPrefs", Context.MODE_PRIVATE)
+        return prefs.getString("Interval Strings", "5 seconds")
     }
 
 

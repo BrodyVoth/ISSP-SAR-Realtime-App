@@ -48,6 +48,7 @@ import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 
 import android.location.*
+import android.widget.TextView
 import kotlin.collections.ArrayList
 
 /**
@@ -75,6 +76,7 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
     private lateinit var outputControl: OutputControl
     private lateinit var dialog: AlertDialog
     private lateinit var prefs: SharedPreferences
+    private lateinit var textView: TextView
 
     private lateinit var cameraControl: CameraControl
     private lateinit var periodicPrediction: PeriodicPrediction
@@ -96,7 +98,7 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
         prefs = this.getSharedPreferences("IntervalPrefs", Context.MODE_PRIVATE)
         val savedInterval = getInterval(this)
         val savedString = getIntString(this)
-        Toast.makeText(this, "Saved Interval: " + savedString, Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, "Saved Interval: " + savedString, Toast.LENGTH_LONG).show()
         val sharedPreferences = this.getSharedPreferences(getString(R.string.shared_preferences_key), Context.MODE_PRIVATE)
         val missingKey = getString(R.string.missing_api_key)
         val apiKey = sharedPreferences.getString(getString(R.string.shared_preferences_api_key), missingKey)
@@ -104,6 +106,8 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
         outputControl = OutputControl(this.applicationContext, recyclerView)
 
         Clarifai.start(this, apiKey)
+
+        PeriodicPrediction.REFRESH_RATE_MS = savedInterval
 
         if (!havePermissions()) {
             Log.d(TAG, "No permission. So, asking for it")
@@ -302,7 +306,7 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
     }
     fun getIntString(context: Context): String? {
         prefs = context.getSharedPreferences("IntervalPrefs", Context.MODE_PRIVATE)
-        return prefs.getString("Interval Strings", "default")
+        return prefs.getString("Interval Strings", "5 seconds")
     }
 
 
