@@ -12,7 +12,7 @@
 
         <com.clarifai.clarity.AutoFitTextureView
             android:id="@+id/texture"
-            android:layout_width="412dp"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -38,5 +38,16 @@
             layout="@layout/toolbar"
             android:id="@+id/my_toolbar">
         </include>
+
+        <TextView
+            android:id="@+id/LocationView"
+            android:layout_width="150dp"
+            android:layout_height="80dp"
+            android:background="@color/cardview_light_background"
+            android:alpha="0.5"
+            android:textColor="#000000"
+            android:text="Acquiring Location"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/my_toolbar" />
     </android.support.constraint.ConstraintLayout>
 </android.support.design.widget.CoordinatorLayout>

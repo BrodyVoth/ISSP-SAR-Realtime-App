@@ -1,30 +1,26 @@
 package com.clarifai.clarity
 
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
-import android.os.Build
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.preference.*
+import android.support.v7.app.AlertDialog
+import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
-import java.util.prefs.PreferenceChangeListener
-import android.preference.PreferenceFragment
-import android.support.annotation.RequiresApi
-import android.support.v7.app.AlertDialog
-import android.view.View
-import android.widget.*
-import com.clarifai.clarifai_android_sdk.utils.Log
-import java.lang.IllegalArgumentException
-import java.lang.reflect.Array
+import android.widget.TextView
+import android.widget.Toast
+import java.io.File
+import android.os.Environment
+import android.util.Log
+
 
 class OptionsAction : AppCompatActivity() {
 
 
     private lateinit var toolbar: android.support.v7.widget.Toolbar
     private lateinit var text: TextView
+    private lateinit var remove: TextView
     private lateinit var builder: AlertDialog.Builder
     private lateinit var dialog: AlertDialog
 
@@ -41,12 +37,17 @@ class OptionsAction : AppCompatActivity() {
 
         toolbar.setTitle("settings")
         text = findViewById(R.id.click)
-        text.setOnClickListener(View.OnClickListener {
+        text.setOnClickListener{
             showAlertDialog()
-        })
+        }
+
+        remove = findViewById(R.id.Clearimages)
+        remove.setOnClickListener{
+            WarnUser()
+        }
+
 
         fragmentManager.beginTransaction().add(R.id.fragment_container, SettingsFragment()).commit()
-
 
     }
 
@@ -79,11 +80,35 @@ class OptionsAction : AppCompatActivity() {
         dialog.show()
     }
 
+    private fun WarnUser() {
+        builder = AlertDialog.Builder(this)
+        builder.setTitle("Warning")
+        builder.setMessage("Do you sure want to DELETE all saved images?")
+                .setCancelable(true)
+                .setPositiveButton("Yes"){
+                    dialog, which ->
+                    val dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES+"/SearchLight")
+                    Log.d("remove", "Got Selected")
+                    if (dir.isDirectory()) {
+                        Log.d("remove", "Found Dir")
+                        val children: Array<String> = dir.list()
+                        for (i in children.indices) {
+                            File(dir, children[i]).delete()
+                        }
+                    }
+                }
+                .setNegativeButton("No") {
+                    dialog, id -> dialog.cancel()
+                }
+
+        dialog = builder.create()
+
+        dialog.show()
+    }
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu,menu)
         return true
     }
-
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
 
         R.id.gallery -> {

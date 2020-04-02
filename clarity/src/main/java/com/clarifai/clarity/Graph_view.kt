@@ -18,37 +18,41 @@ import kotlinx.android.synthetic.main.activity_graph_view.*
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
+import java.io.FileNotFoundException
 import java.io.IOException
 import kotlin.random.Random
 
 
 class Graph_view : AppCompatActivity() {
-    private val images = readfile()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_graph_view)
         setSupportActionBar(findViewById(R.id.my_toolbar))
 
         var index=0
-
-        ChangeImage(index)
-        back_button.setOnClickListener{
-            if(index>0){
-                index--
-            }
-            else{
-                Toast.makeText(this, "First Photo in gallery is currently shown", Toast.LENGTH_SHORT).show()
-            }
+        try{
+            val images = readfile()
             ChangeImage(index)
-        }
-        forward_button.setOnClickListener{
-            if(index<images.length()-1){
-            index++
+            back_button.setOnClickListener{
+                if(index>0){
+                    index--
+                }
+                else{
+                    Toast.makeText(this, "First Photo in gallery is currently shown", Toast.LENGTH_SHORT).show()
+                }
+                ChangeImage(index)
             }
-            else{index = 0}
-            ChangeImage(index)
+            forward_button.setOnClickListener{
+                if(index<images.length()-1){
+                index++
+                }
+                else{index = 0}
+                ChangeImage(index)
+            }
+            Creategraph(images)
+        }catch (e:FileNotFoundException){
+            Toast.makeText(this,"Prediction Data Not Found",Toast.LENGTH_LONG).show()
         }
-        Creategraph(images)
     }
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu,menu)
@@ -159,6 +163,7 @@ class Graph_view : AppCompatActivity() {
         return Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256))
     }
     private fun ChangeImage(index: Int){
+        val images = readfile()
         val obj = images.getJSONObject(index)
         var filestr = ""
         var tagstr = ""

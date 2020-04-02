@@ -21,26 +21,38 @@
         android:paddingLeft="15dp">
     </TextView>
 
+    <TextView
+        android:id="@+id/Clearimages"
+        android:height="56dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/textview_border"
+        android:text="Clear Images"
+        android:textSize="20sp"
+        android:paddingTop="15dp"
+        android:paddingLeft="15dp">
+    </TextView>
+
     <FrameLayout
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
-        android:layout_height="575dp"
+        android:layout_height="fill_parent"
         android:paddingTop="30dp"
         android:textAlignment="center">
 
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
             android:paddingTop="50dp"
             android:src="@drawable/searchlightimagelocator" />
-
     </FrameLayout>
 
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="match_parent"
-        android:layout_height="37dp"
-        android:text="@string/copyright"
-        android:textColor="@color/colorBlue"
-        android:textAlignment="center"/>
+<!--    <TextView-->
+<!--        android:id="@+id/textView3"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="37dp"-->
+<!--        android:text="@string/copyright"-->
+<!--        android:textColor="@color/colorBlue"-->
+<!--        android:textAlignment="center"/>-->
 </LinearLayout>

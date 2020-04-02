@@ -49,6 +49,7 @@ import java.time.format.DateTimeFormatter
 
 import android.location.*
 import android.widget.TextView
+import kotlinx.android.synthetic.main.activity_home.*
 import kotlin.collections.ArrayList
 
 /**
@@ -88,7 +89,6 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
     private var locationManager : LocationManager? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
         super.onCreate(savedInstanceState)
         setupWindow()
         setContentView(R.layout.activity_home)
@@ -252,7 +252,7 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
 
         // Initialize a new file instance to save bitmap object
         var file = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES+"/SearchLight")
-        file = File(file,"${UUID.randomUUID()}.jpg")
+        file = File(file,"${DateTimeFormatter.ISO_INSTANT.withZone(ZoneOffset.UTC).format(Instant.now())}.jpg")
 
         try{
             // Compress the bitmap and save in jpg format
@@ -299,7 +299,6 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
         }
         return "Done"
     }
-
     fun getInterval(context: Context): Int {
         prefs = context.getSharedPreferences("IntervalPrefs", Context.MODE_PRIVATE)
         return prefs.getInt("Picture Intervals", 5000)
@@ -308,15 +307,13 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
         prefs = context.getSharedPreferences("IntervalPrefs", Context.MODE_PRIVATE)
         return prefs.getString("Interval Strings", "5 seconds")
     }
-
-
     private fun GetLocation(): List<String>{
         var coord = ArrayList<String>()
         try{
             val location = locationManager?.getLastKnownLocation(LocationManager.GPS_PROVIDER)
-            Log.d("LOCATION",location?.latitude.toString())
+            //Log.d("LOCATION",location?.latitude.toString())
             var lat = location?.latitude.toString()
-            Log.d("LOCATION",location?.longitude.toString())
+            //Log.d("LOCATION",location?.longitude.toString())
             var log = location?.longitude.toString()
             coord.add(0, lat)
             coord.add(1, log)
@@ -326,6 +323,11 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
             coord.add(0, "0.00")
             coord.add(1, "0.00")
         }
+
+        //Update Screen
+        val text = "Latitude:"+coord[0]+"\nLongitude:"+coord[1]
+        LocationView.text = text
+
         return coord
     }
 
