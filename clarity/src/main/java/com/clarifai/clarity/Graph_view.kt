@@ -166,7 +166,7 @@ class Graph_view : AppCompatActivity() {
         val objstr = obj.toString().replace("{","").split(',')
         var path = objstr[0].replace("\\","")+"\n"
         var path1 = path.split("/")
-        filestr += "FilePath:\n"+path1.last()
+        filestr += "Image File-Path:\n"+path1.last()
         filestr += objstr[1]+"\n\n"
         filestr += objstr[2]+"\n"
         filestr += objstr[3]+"\n"

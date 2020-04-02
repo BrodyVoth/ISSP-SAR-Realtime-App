@@ -280,8 +280,8 @@ class Home : AppCompatActivity(), PeriodicPrediction.PredictionTriggers, CameraC
         var obj = JSONObject()
         obj.put("Filename",filepath)
         obj.put("TimeStamp", DateTimeFormatter.ISO_INSTANT.withZone(ZoneOffset.UTC).format(Instant.now()))
-        obj.put("X",location[0])
-        obj.put("Y",location[1])
+        obj.put("Latitude",location[0])
+        obj.put("Longitude",location[1])
 
         for(value in outputs) {
             Log.d(TAG, value.joinToString())

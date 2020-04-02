@@ -30,7 +30,6 @@ class PreloadActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         checkForApiKey()
     }
-
     private fun checkForApiKey() {
         val sharedPreferences = this.getSharedPreferences(getString(R.string.shared_preferences_key), Context.MODE_PRIVATE)
         val missingKey = getString(R.string.missing_api_key)
@@ -42,7 +41,6 @@ class PreloadActivity : AppCompatActivity() {
             startHomeActivity()
         }
     }
-
     private fun promptForApiKey() {
         val alertDialog = AlertDialog.Builder(this)
         alertDialog.setTitle(getString(R.string.api_dialog_title))
@@ -68,7 +66,6 @@ class PreloadActivity : AppCompatActivity() {
 
         alertDialog.show()
     }
-
     private fun startHomeActivity() {
         val intent = Intent(this, Home::class.java)
         startActivity(intent)
