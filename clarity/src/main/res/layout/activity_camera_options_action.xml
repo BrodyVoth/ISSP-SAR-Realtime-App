@@ -43,16 +43,18 @@
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
             android:paddingTop="50dp"
             android:src="@drawable/searchlightimagelocator" />
+        
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="match_parent"
+            android:layout_height="37dp"
+            android:text="@string/copyright"
+            android:textColor="@color/colorBlue"
+            android:layout_gravity="bottom"
+            android:textAlignment="center"/>
     </FrameLayout>
 
-<!--    <TextView-->
-<!--        android:id="@+id/textView3"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="37dp"-->
-<!--        android:text="@string/copyright"-->
-<!--        android:textColor="@color/colorBlue"-->
-<!--        android:textAlignment="center"/>-->
+
 </LinearLayout>

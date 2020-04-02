@@ -175,7 +175,7 @@ class Graph_view : AppCompatActivity() {
         filestr += objstr[1]+"\n\n"
         filestr += objstr[2]+"\n"
         filestr += objstr[3]+"\n"
-        filestr.replace(Regex("\""),"")
+        filestr = filestr.replace(Regex("\""),"")
 
 
         tagstr += objstr[4]+"\n"
@@ -183,8 +183,9 @@ class Graph_view : AppCompatActivity() {
         tagstr += objstr[6]+"\n"
         tagstr += objstr[7]+"\n"
         tagstr += objstr[8]
-        tagstr.replace(Regex("\""),"")
-        tagstr.replace("}",",")
+        tagstr = tagstr.replace(Regex(":")," : ")
+        tagstr = tagstr.replace(Regex("\""),"")
+        tagstr = tagstr.replace("}","")
 
         fileinfo.text = filestr
         predictioninfo.text = tagstr
